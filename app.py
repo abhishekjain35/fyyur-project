@@ -444,17 +444,18 @@ def show_artist(artist_id):
   if not artist: 
     return render_template('errors/404.html')
 
-  past_data = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
+  past_data = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time<datetime.now()).all()
   past_shows = []
+
 
   for show in past_data:
     past_shows.append({
       "venue_id": show.venue_id,
       "venue_name": show.venue.name,
-      "artist_image_link": show.venue.image_link,
+      "venue_image_link": show.venue.image_link,
       "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
     })
-
+  
   upcoming_data = db.session.query(Show).join(Venue).filter(Show.artist_id==artist_id).filter(Show.start_time>datetime.now()).all()
   upcoming_shows = []
 
@@ -462,7 +463,7 @@ def show_artist(artist_id):
     upcoming_shows.append({
       "venue_id": show.venue_id,
       "venue_name": show.venue.name,
-      "artist_image_link": show.venue.image_link,
+      "venue_image_link": show.venue.image_link,
       "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
     })
 
@@ -578,7 +579,7 @@ def edit_venue(venue_id):
     form.genres.data = venue.genres
     form.facebook_link.data = venue.facebook_link
     form.image_link.data = venue.image_link
-    form.website.data = venue.website
+    form.website_link.data = venue.website
     form.seeking_talent.data = venue.seeking_talent
     form.seeking_description.data = venue.seeking_description
 

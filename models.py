@@ -4,10 +4,10 @@ class Venue(db.Model):
     __tablename__ = 'venue'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     genres = db.Column(db.ARRAY(db.String(50)))
-    address = db.Column(db.String(120))
-    city = db.Column(db.String(120))
+    address = db.Column(db.String(120), nullable=False)
+    city = db.Column(db.String(120), nullable=False)
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
     website = db.Column(db.String())
@@ -24,9 +24,9 @@ class Artist(db.Model):
     __tablename__ = 'artist'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     genres = db.Column(db.ARRAY(db.String(50)))
-    city = db.Column(db.String(120))
+    city = db.Column(db.String(120), nullable=False)
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
     website = db.Column(db.String(120))
