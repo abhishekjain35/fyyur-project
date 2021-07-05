@@ -166,12 +166,9 @@ def create_venue_submission():
     genres = request.form.getlist('genres')
     image_link = request.form['image_link']
     facebook_link = request.form['facebook_link']
-    print('in venue', request.form)
     website = request.form['website_link']
     seeking_talent = True if 'seeking_talent' in request.form else False 
     seeking_description = request.form['seeking_description']
-
-    print(name)
 
     venue = Venue(name=name, city=city, state=state, address=address, phone=phone, genres=genres, facebook_link=facebook_link, image_link=image_link, website=website, seeking_talent=seeking_talent, seeking_description=seeking_description)
     db.session.add(venue)
@@ -453,8 +450,6 @@ def create_show_submission():
     artist_id = request.form['artist_id']
     venue_id = request.form['venue_id']
     start_time = request.form['start_time']
-
-    print(request.form)
 
     show = Show(artist_id=artist_id, venue_id=venue_id, start_time=start_time)
     db.session.add(show)
