@@ -5,7 +5,14 @@ import sys
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import (
+  Flask,
+  render_template,
+  request,
+  flash,
+  redirect,
+  url_for
+)
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -66,7 +73,7 @@ def venues():
       venue_data.append({
         "id": venue.id,
         "name": venue.name, 
-        "num_upcoming_shows": len(db.session.query(Show).filter(Show.venue_id==1).filter(Show.start_time>datetime.now()).all())
+        "num_upcoming_shows": len([show for show in venue.shows if show.start_time > datetime.now()])
       })
     data.append({
       "city": area.city,
@@ -157,21 +164,8 @@ def create_venue_submission():
   error = False
   
   try: 
-    seeking_talent = True if 'seeking_talent' in form else False
-
-    venue = Venue(
-      name=form.name.data,
-      city=form.city.data,
-      state=form.state.data,
-      address=form.address.data,
-      phone=form.phone.data,
-      genres=form.genres.data,
-      facebook_link=form.facebook_link.data,
-      image_link=form.image_link.data,
-      website_link=form.website_link.data,
-      seeking_talent=seeking_talent,
-      seeking_description=form.seeking_description.data
-    )
+    venue = Venue()
+    form.populate_obj(venue)
     db.session.add(venue)
     db.session.commit()
   except: 
@@ -391,19 +385,11 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   error = False
+  form = ArtistForm(request.form)
+  print(request.form)
   try: 
-    name = request.form['name']
-    city = request.form['city']
-    state = request.form['state']
-    phone = request.form['phone']
-    genres = request.form.getlist('genres'),
-    facebook_link = request.form['facebook_link']
-    image_link = request.form['image_link']
-    website_link = request.form['website_link']
-    seeking_venue = True if 'seeking_venue' in request.form else False
-    seeking_description = request.form['seeking_description']
-
-    artist = Artist(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link, image_link=image_link, website_link=website_link, seeking_venue=seeking_venue, seeking_description=seeking_description)
+    artist = Artist()
+    form.populate_obj(artist)
     db.session.add(artist)
     db.session.commit()
   except: 
