@@ -160,22 +160,26 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-  form = VenueForm(request.form)
+  form = VenueForm(request.form, meta={'csrf': False})
   error = False
+  if form.validate():
+    try: 
+      venue = Venue()
+      form.populate_obj(venue)
+      db.session.add(venue)
+      db.session.commit()
+    except: 
+      error = True
+      db.session.rollback()
+      print(sys.exc_info())
+    finally: 
+      db.session.close()
+  else:
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
   
-  try: 
-    venue = Venue()
-    form.populate_obj(venue)
-    db.session.add(venue)
-    db.session.commit()
-  except: 
-    error = True
-    db.session.rollback()
-    print(sys.exc_info())
-  finally: 
-    db.session.close()
-  if error: 
-    flash('An error occurred. Venue ' + request.form['name']+ ' could not be listed.', error)
   if not error: 
     flash('Venue ' + request.form['name'] + ' was successfully listed!')
   return render_template('pages/home.html')
@@ -385,21 +389,26 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   error = False
-  form = ArtistForm(request.form)
-  print(request.form)
-  try: 
-    artist = Artist()
-    form.populate_obj(artist)
-    db.session.add(artist)
-    db.session.commit()
-  except: 
-    error = True
-    db.session.rollback()
-    print(sys.exc_info())
-  finally: 
-    db.session.close()
-  if error: 
-    flash('An error occurred. Artist ' + request.form['name']+ ' could not be listed.')
+  form = ArtistForm(request.form, meta={'csrf': False})
+  if form.validate():
+    try: 
+      artist = Artist()
+      form.populate_obj(artist)
+      db.session.add(artist)
+      db.session.commit()
+    except: 
+      error = True
+      db.session.rollback()
+      print(sys.exc_info())
+    finally: 
+      db.session.close()
+
+  else:
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
+  
   if not error: 
     flash('Artist ' + request.form['name'] + ' was successfully listed!')
   return render_template('pages/home.html')
@@ -433,12 +442,10 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   error = False
+  form = ShowForm(request.form)
   try: 
-    artist_id = request.form['artist_id']
-    venue_id = request.form['venue_id']
-    start_time = request.form['start_time']
-
-    show = Show(artist_id=artist_id, venue_id=venue_id, start_time=start_time)
+    show = Show()
+    form.populate_obj(show)
     db.session.add(show)
     db.session.commit()
   except: 
