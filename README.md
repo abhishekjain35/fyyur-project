@@ -25,7 +25,7 @@ pip install Flask
 pip install Flask-Migrate
 ```
 
-> **Note** - If we do not mention the specific version of a package, then the default latest stable package will be installed.
+> **Note** - If the specific version of a package is not mentioned, then the default latest stable package will be installed.
 
 ### 2. Frontend Dependencies
 
@@ -78,8 +78,7 @@ Overall:
 1. **Download the project starter code locally**
 
 ```
-git clone https://github.com/udacity/FSND.git
-cd FSND/projects/01_fyyur/starter_code
+git clone https://github.com/abhishekjain35/fyyur-project.git
 ```
 
 2. **Create an empty repository in your Github account online. To change the remote repository path in your local repository, use the commands below:**
